@@ -9,17 +9,17 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "PuntoCell Valencia - Calculadora Trade-In",
   description: "Calcula el valor de tu iPhone para parte de pago",
-  metadataBase: new URL("https://puntocell.roasmap.com"),
+  metadataBase: new URL("https://tradein-calculator-2026.vercel.app"),
   openGraph: {
     type: "website",
     locale: "es_ES",
-    url: "https://puntocell.roasmap.com",
+    url: "https://tradein-calculator-2026.vercel.app",
     siteName: "PuntoCell Valencia",
     title: "PuntoCell Valencia - Calculadora Trade-In",
     description: "Calcula el valor de tu iPhone para parte de pago en PuntoCell Valencia",
     images: [
       {
-        url: "https://puntocell.roasmap.com/og-image.png",
+        url: "https://tradein-calculator-2026.vercel.app/images/trade-in.png",
         width: 1200,
         height: 630,
         alt: "PuntoCell Valencia - Intercambia tu iPhone",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "PuntoCell Valencia - Calculadora Trade-In",
     description: "Calcula el valor de tu iPhone para parte de pago en PuntoCell Valencia",
-    images: ["https://puntocell.roasmap.com/og-image.png"],
+    images: ["https://tradein-calculator-2026.vercel.app/images/trade-in.png"],
   },
     generator: 'v0.app'
 }
