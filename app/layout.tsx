@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     description: "Calcula el valor de tu iPhone para parte de pago en PuntoCell Valencia",
     images: [
       {
-        url: "https://tradein-calculator-2026.vercel.app/trade-in.png",
+        url: "https://tradein-calculator-2026.vercel.app/trade-in.png?v=2",
         width: 1200,
         height: 630,
         alt: "PuntoCell Valencia - Intercambia tu iPhone",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "PuntoCell Valencia - Calculadora Trade-In",
     description: "Calcula el valor de tu iPhone para parte de pago en PuntoCell Valencia",
-    images: ["https://tradein-calculator-2026.vercel.app/trade-in.png"],
+    images: ["https://tradein-calculator-2026.vercel.app/trade-in.png?v=2"],
   },
     generator: 'v0.app'
 }
