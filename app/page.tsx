@@ -755,12 +755,12 @@ export default function TradeInCalculator() {
           <p className="mt-3 text-xs text-gray-400">
             Desarrollado por{" "}
             <a
-              href="https://blu0.com"
+              href="https://thislever.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#0071e3] transition-colors hover:text-[#0077ED] hover:underline"
             >
-              blu0.com
+              Lever
             </a>
           </p>
         </div>
