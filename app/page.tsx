@@ -6,19 +6,19 @@ import { Card } from "@/components/ui/card"
 
 const pricingDatabase: Record<string, Record<string, Record<string, { high: number; low: number }>>> = {
   "iPhone 12": {
-    "64GB": { high: 200, low: 180 },
-    "128GB": { high: 240, low: 220 },
-    "256GB": { high: 280, low: 260 },
+    "64GB": { high: 150, low: 120 },
+    "128GB": { high: 180, low: 150 },
+    "256GB": { high: 210, low: 180 },
   },
   "iPhone 12 Pro": {
-    "128GB": { high: 260, low: 250 },
-    "256GB": { high: 280, low: 260 },
-    "512GB": { high: 320, low: 300 },
+    "128GB": { high: 240, low: 210 },
+    "256GB": { high: 270, low: 240 },
+    "512GB": { high: 300, low: 270 },
   },
   "iPhone 12 Pro Max": {
-    "128GB": { high: 250, low: 240 },
-    "256GB": { high: 300, low: 280 },
-    "512GB": { high: 340, low: 320 },
+    "128GB": { high: 280, low: 250 },
+    "256GB": { high: 310, low: 280 },
+    "512GB": { high: 340, low: 310 },
   },
   "iPhone 13": {
     "128GB": { high: 340, low: 320 },
