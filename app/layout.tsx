@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     description: "Calcula el valor de tu iPhone para parte de pago en PuntoCell Valencia",
     images: ["https://tradein-calculator-2026.vercel.app/trade-in.png?v=2"],
   },
-    generator: 'v0.app'
+    generator: 'Mako'
 }
 
 export default function RootLayout({

@@ -42,7 +42,7 @@ npm start
 
 ## Créditos
 
-Desarrollado por [blu0.com](https://blu0.com) para PuntoCell Valencia.
+Desarrollado por Mako para PuntoCell Valencia.
 
 ## Nota Legal
 

@@ -1,131 +1,123 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
-const pricingDatabase: Record<string, Record<string, Record<string, { high: number; low: number }>>> = {
+const pricingDatabase: Record<string, Record<string, { high: number; low: number }>> = {
   "iPhone 12": {
-    "64GB": { high: 150, low: 120 },
-    "128GB": { high: 180, low: 150 },
-    "256GB": { high: 210, low: 180 },
+    "128GB": { high: 100, low: 70 },
+    "256GB": { high: 120, low: 90 },
   },
   "iPhone 12 Pro": {
-    "128GB": { high: 240, low: 210 },
-    "256GB": { high: 270, low: 240 },
-    "512GB": { high: 300, low: 270 },
+    "128GB": { high: 140, low: 110 },
+    "256GB": { high: 160, low: 130 },
+    "512GB": { high: 180, low: 150 },
   },
   "iPhone 12 Pro Max": {
-    "128GB": { high: 280, low: 250 },
-    "256GB": { high: 310, low: 280 },
-    "512GB": { high: 340, low: 310 },
+    "128GB": { high: 200, low: 170 },
+    "256GB": { high: 220, low: 190 },
+    "512GB": { high: 240, low: 210 },
   },
   "iPhone 13": {
-    "128GB": { high: 250, low: 220 },
-    "256GB": { high: 280, low: 250 },
-    "512GB": { high: 330, low: 300 },
+    "128GB": { high: 200, low: 170 },
+    "256GB": { high: 230, low: 200 },
+    "512GB": { high: 250, low: 220 },
   },
   "iPhone 13 Pro": {
-    "128GB": { high: 350, low: 320 },
-    "256GB": { high: 380, low: 350 },
-    "512GB": { high: 400, low: 380 },
-    "1TB": { high: 430, low: 410 },
+    "128GB": { high: 230, low: 200 },
+    "256GB": { high: 250, low: 220 },
+    "512GB": { high: 270, low: 240 },
+    "1TB": { high: 290, low: 260 },
   },
   "iPhone 13 Pro Max": {
-    "128GB": { high: 370, low: 340 },
-    "256GB": { high: 400, low: 370 },
-    "512GB": { high: 450, low: 420 },
-    "1TB": { high: 480, low: 450 },
+    "128GB": { high: 270, low: 240 },
+    "256GB": { high: 290, low: 260 },
+    "512GB": { high: 310, low: 280 },
+    "1TB": { high: 330, low: 300 },
   },
   "iPhone 14": {
-    "128GB": { high: 350, low: 320 },
-    "256GB": { high: 380, low: 350 },
-    "512GB": { high: 400, low: 380 },
+    "128GB": { high: 290, low: 260 },
+    "256GB": { high: 310, low: 280 },
+    "512GB": { high: 330, low: 300 },
   },
   "iPhone 14 Plus": {
-    "128GB": { high: 370, low: 340 },
-    "256GB": { high: 400, low: 370 },
-    "512GB": { high: 430, low: 340 },
+    "128GB": { high: 300, low: 270 },
+    "256GB": { high: 320, low: 290 },
+    "512GB": { high: 340, low: 310 },
   },
   "iPhone 14 Pro": {
-    "128GB": { high: 450, low: 420 },
-    "256GB": { high: 460, low: 430 },
-    "512GB": { high: 500, low: 470 },
-    "1TB": { high: 520, low: 490 },
+    "128GB": { high: 350, low: 320 },
+    "256GB": { high: 370, low: 340 },
+    "512GB": { high: 390, low: 360 },
+    "1TB": { high: 410, low: 380 },
   },
   "iPhone 14 Pro Max": {
-    "128GB": { high: 470, low: 440 },
-    "256GB": { high: 500, low: 470 },
-    "512GB": { high: 550, low: 520 },
-    "1TB": { high: 570, low: 540 },
+    "128GB": { high: 390, low: 360 },
+    "256GB": { high: 410, low: 380 },
+    "512GB": { high: 430, low: 400 },
+    "1TB": { high: 450, low: 420 },
   },
   "iPhone 15": {
-    "128GB": { high: 450, low: 420 },
-    "256GB": { high: 480, low: 450 },
-    "512GB": { high: 510, low: 470 },
+    "128GB": { high: 390, low: 360 },
+    "256GB": { high: 410, low: 380 },
+    "512GB": { high: 430, low: 400 },
   },
   "iPhone 15 Plus": {
-    "128GB": { high: 470, low: 430 },
+    "128GB": { high: 400, low: 360 },
+    "256GB": { high: 420, low: 380 },
+    "512GB": { high: 440, low: 400 },
+  },
+  "iPhone 15 Pro": {
+    "128GB": { high: 530, low: 500 },
+    "256GB": { high: 560, low: 530 },
+    "512GB": { high: 610, low: 560 },
+    "1TB": { high: 630, low: 580 },
+  },
+  "iPhone 15 Pro Max": {
+    "256GB": { high: 430, low: 390 },
+    "512GB": { high: 450, low: 410 },
+    "1TB": { high: 470, low: 430 },
+  },
+  "iPhone 16": {
+    "128GB": { high: 450, low: 410 },
+    "256GB": { high: 470, low: 430 },
+    "512GB": { high: 490, low: 450 },
+  },
+  "iPhone 16 Plus": {
+    "128GB": { high: 460, low: 420 },
     "256GB": { high: 480, low: 440 },
     "512GB": { high: 500, low: 460 },
   },
-  "iPhone 15 Pro": {
-    "128GB": { high: 550, low: 520 },
-    "256GB": { high: 580, low: 550 },
-    "512GB": { high: 630, low: 580 },
-    "1TB": { high: 650, low: 600 },
-  },
-  "iPhone 15 Pro Max": {
-    "256GB": { high: 620, low: 570 },
-    "512GB": { high: 650, low: 600 },
-    "1TB": { high: 670, low: 620 },
-  },
-  "iPhone 16": {
-    "128GB": { high: 550, low: 500 },
-    "256GB": { high: 580, low: 530 },
-    "512GB": { high: 630, low: 580 },
-  },
-  "iPhone 16 Plus": {
-    "128GB": { high: 570, low: 520 },
-    "256GB": { high: 600, low: 550 },
-    "512GB": { high: 630, low: 580 },
-  },
   "iPhone 16 Pro": {
-    "128GB": { high: 650, low: 600 },
-    "256GB": { high: 680, low: 630 },
-    "512GB": { high: 700, low: 650 },
-    "1TB": { high: 720, low: 670 },
+    "128GB": { high: 500, low: 450 },
+    "256GB": { high: 520, low: 470 },
+    "512GB": { high: 540, low: 490 },
+    "1TB": { high: 560, low: 520 },
   },
   "iPhone 16 Pro Max": {
-    "256GB": { high: 780, low: 750 },
-    "512GB": { high: 830, low: 780 },
-    "1TB": { high: 860, low: 810 },
+    "256GB": { high: 650, low: 600 },
+    "512GB": { high: 700, low: 650 },
+    "1TB": { high: 750, low: 700 },
   },
   "iPhone 17": {
-    "128GB": { high: 700, low: 680 },
-    "256GB": { high: 720, low: 700 },
-    "512GB": { high: 750, low: 730 },
-  },
-  "iPhone 17 Air": {
-    "256GB": { high: 780, low: 760 },
-    "512GB": { high: 820, low: 800 },
-    "1TB": { high: 860, low: 840 },
+    "128GB": { high: 700, low: 650 },
+    "256GB": { high: 750, low: 700 },
+    "512GB": { high: 800, low: 750 },
   },
   "iPhone 17 Pro": {
-    "256GB": { high: 900, low: 880 },
-    "512GB": { high: 950, low: 930 },
-    "1TB": { high: 1000, low: 980 },
+    "256GB": { high: 850, low: 800 },
+    "512GB": { high: 900, low: 850 },
   },
   "iPhone 17 Pro Max": {
-    "256GB": { high: 1050, low: 1030 },
-    "512GB": { high: 1100, low: 1080 },
-    "1TB": { high: 1150, low: 1130 },
+    "256GB": { high: 950, low: 900 },
+    "512GB": { high: 1000, low: 950 },
   },
 }
 
 const iPhoneData = {
   "12": [
-    { model: "iPhone 12", capacities: ["64GB", "128GB", "256GB"] },
+    { model: "iPhone 12", capacities: ["128GB", "256GB"] },
     { model: "iPhone 12 Pro", capacities: ["128GB", "256GB", "512GB"] },
     { model: "iPhone 12 Pro Max", capacities: ["128GB", "256GB", "512GB"] },
   ],
@@ -154,17 +146,28 @@ const iPhoneData = {
   ],
   "17": [
     { model: "iPhone 17", capacities: ["128GB", "256GB", "512GB"] },
-    { model: "iPhone 17 Air", capacities: ["256GB", "512GB", "1TB"] },
-    { model: "iPhone 17 Pro", capacities: ["256GB", "512GB", "1TB"] },
-    { model: "iPhone 17 Pro Max", capacities: ["256GB", "512GB", "1TB"] },
+    { model: "iPhone 17 Pro", capacities: ["256GB", "512GB"] },
+    { model: "iPhone 17 Pro Max", capacities: ["256GB", "512GB"] },
   ],
 }
 
-const conditionOptions = [
+type ConditionOption = {
+  label: string
+  description: string
+  discount: number
+  manual?: boolean
+}
+
+const conditionOptions: ConditionOption[] = [
   { label: "Grado A", description: "Como nuevo", discount: 0 },
   { label: "Grado B", description: "Detalles de uso", discount: 0.15 },
-  { label: "Grado C", description: "Pantalla/Tapa rota o reparaciones previas", manual: true },
+  { label: "Grado C", description: "Pantalla/Tapa rota o reparaciones previas", discount: 0, manual: true },
 ]
+
+// Batería a partir de la cual aplica el precio alto (high). Debajo aplica el precio bajo (low).
+const BATTERY_THRESHOLD = 85
+// Series que además solicitan el número de ciclos de batería.
+const SERIES_WITH_CYCLES = ["15", "16", "17"]
 
 export default function TradeInCalculator() {
   const [step, setStep] = useState(1)
@@ -177,14 +180,22 @@ export default function TradeInCalculator() {
   const [selectedCondition, setSelectedCondition] = useState<any>(null)
   const [tradeOption, setTradeOption] = useState<string>("")
 
+  // Permite activar tarjetas clicables con teclado (Enter / Espacio) para accesibilidad.
+  const activateOnKey = (e: React.KeyboardEvent, action: () => void) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault()
+      action()
+    }
+  }
+
   const getBatteryColor = (percentage: number) => {
-    if (percentage >= 81) return "#34c759"
+    if (percentage >= BATTERY_THRESHOLD) return "#34c759"
     if (percentage >= 60) return "#ff9500"
     return "#ff3b30"
   }
 
   const calculatePrice = () => {
-    if (!selectedModel || !selectedCapacity || batteryPercentage === null || !selectedCondition) return 0
+    if (!selectedModel || !selectedCapacity || !selectedCondition) return 0
 
     if (selectedCondition.manual) return 0
 
@@ -194,7 +205,7 @@ export default function TradeInCalculator() {
     const { high, low } = modelPricing[selectedCapacity]
 
     // Select price based on battery percentage
-    let price = batteryPercentage >= 81 ? high : low
+    let price = batteryPercentage >= BATTERY_THRESHOLD ? high : low
 
     // Apply Grade B discount if applicable (Grado A has 0 discount, Grado C is manual)
     if (selectedCondition.discount > 0) {
@@ -209,14 +220,20 @@ export default function TradeInCalculator() {
     return Math.round(price)
   }
 
+  // Si es Grado C (manual) o no hay precio disponible para la combinación,
+  // se muestra cotización manual en lugar de un valor de $0.
+  const currentPrice = calculatePrice()
+  const isManualQuote = Boolean(selectedCondition?.manual) || currentPrice <= 0
+
   const handleWhatsAppClick = () => {
     const price = calculatePrice()
+    const manualQuote = Boolean(selectedCondition?.manual) || price <= 0
 
-    const shouldShowCycles = selectedSeries && ["15", "16", "17"].includes(selectedSeries)
+    const shouldShowCycles = selectedSeries && SERIES_WITH_CYCLES.includes(selectedSeries)
 
     const tradeOptionText = tradeOption === "sell" ? "Vender mi equipo" : "Cambio por equipo nuevo"
 
-    const message = selectedCondition?.manual
+    const message = manualQuote
       ? `Hola Equipo de PuntoCell, me gustaría entregar mi equipo como parte de pago. Aquí los detalles:\n\n• *Equipo:* ${selectedModel.model} de ${selectedCapacity}\n• *Batería:* ${batteryPercentage}%\n• *Condición:* ${selectedCondition.label} (${selectedCondition.description})\n• *Opción:* ${tradeOptionText}\n• *Precio estimado:* Cotización sujeta a revisión técnica manual\n\n¿Cómo es el proceso para la revisión física?`
       : `Hola Equipo de PuntoCell, me gustaría entregar mi equipo como parte de pago. Aquí los detalles:\n\n• *Equipo:* ${selectedModel.model} de ${selectedCapacity}\n• *Caja original:* ${hasBox ? "Sí (+$20)" : "No"}\n• *Batería:* ${batteryPercentage}%${shouldShowCycles ? `\n• *Ciclos de batería:* ${batteryCycles}` : ""}\n• *Condición:* ${selectedCondition.label}\n• *Opción:* ${tradeOptionText}\n• *Precio estimado:* $${price}\n\n¿Cómo es el proceso para la revisión física?`
 
@@ -270,11 +287,20 @@ export default function TradeInCalculator() {
               {Object.keys(iPhoneData).map((series) => (
                 <Card
                   key={series}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Seleccionar serie ${series}`}
                   onClick={() => {
                     setSelectedSeries(series)
                     setStep(2)
                   }}
-                  className="cursor-pointer rounded-[18px] border border-gray-200 bg-white p-8 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-lg"
+                  onKeyDown={(e) =>
+                    activateOnKey(e, () => {
+                      setSelectedSeries(series)
+                      setStep(2)
+                    })
+                  }
+                  className="cursor-pointer rounded-[18px] border border-gray-200 bg-white p-8 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0071e3]"
                 >
                   <div className="mb-4 flex justify-center">
                     <img
@@ -337,21 +363,39 @@ export default function TradeInCalculator() {
             </p>
             <div className="grid gap-4 sm:grid-cols-2 max-w-xl mx-auto">
               <Card
+                role="button"
+                tabIndex={0}
+                aria-label="Sí poseo la caja original"
                 onClick={() => {
                   setHasBox(true)
                   setStep(4)
                 }}
-                className="cursor-pointer rounded-[18px] border-2 border-gray-200 bg-white p-8 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:border-[#0071e3] hover:shadow-lg"
+                onKeyDown={(e) =>
+                  activateOnKey(e, () => {
+                    setHasBox(true)
+                    setStep(4)
+                  })
+                }
+                className="cursor-pointer rounded-[18px] border-2 border-gray-200 bg-white p-8 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:border-[#0071e3] hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0071e3]"
               >
-                <p className="text-center text-2xl font-semibold text-[#1D1D1F]">Si</p>
+                <p className="text-center text-2xl font-semibold text-[#1D1D1F]">Sí</p>
                 <p className="mt-2 text-center text-sm text-green-600 font-medium">+$20 al valor final</p>
               </Card>
               <Card
+                role="button"
+                tabIndex={0}
+                aria-label="No poseo la caja original"
                 onClick={() => {
                   setHasBox(false)
                   setStep(4)
                 }}
-                className="cursor-pointer rounded-[18px] border-2 border-gray-200 bg-white p-8 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:border-[#0071e3] hover:shadow-lg"
+                onKeyDown={(e) =>
+                  activateOnKey(e, () => {
+                    setHasBox(false)
+                    setStep(4)
+                  })
+                }
+                className="cursor-pointer rounded-[18px] border-2 border-gray-200 bg-white p-8 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:border-[#0071e3] hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0071e3]"
               >
                 <p className="text-center text-2xl font-semibold text-[#1D1D1F]">No</p>
                 <p className="mt-2 text-center text-sm text-gray-500">Sin bonificación</p>
@@ -402,7 +446,7 @@ export default function TradeInCalculator() {
                     {batteryPercentage}%
                   </div>
                   <div className="mt-2 text-sm font-medium text-gray-500">
-                    {batteryPercentage >= 81
+                    {batteryPercentage >= BATTERY_THRESHOLD
                       ? "Excelente estado"
                       : batteryPercentage >= 60
                         ? "Estado regular"
@@ -419,6 +463,7 @@ export default function TradeInCalculator() {
                   max="100"
                   value={batteryPercentage}
                   onChange={(e) => setBatteryPercentage(Number(e.target.value))}
+                  aria-label="Porcentaje de salud de la batería"
                   className="battery-slider w-full"
                   style={{
                     accentColor: getBatteryColor(batteryPercentage),
@@ -436,7 +481,9 @@ export default function TradeInCalculator() {
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-gray-600">Precio aplicable:</span>
                   <span className="font-semibold text-[#1D1D1F]">
-                    {batteryPercentage >= 81 ? "Batería +80%" : "Batería -80%"}
+                    {batteryPercentage >= BATTERY_THRESHOLD
+                      ? `Batería ≥${BATTERY_THRESHOLD}%`
+                      : `Batería <${BATTERY_THRESHOLD}%`}
                   </span>
                 </div>
                 {batteryPercentage < 60 && (
@@ -449,7 +496,7 @@ export default function TradeInCalculator() {
               {/* Continue Button */}
               <Button
                 onClick={() => {
-                  const needsCyclesStep = ["15", "16", "17"].includes(selectedSeries)
+                  const needsCyclesStep = SERIES_WITH_CYCLES.includes(selectedSeries)
                   setStep(needsCyclesStep ? 5 : 6)
                 }}
                 className="w-full rounded-full bg-[#0071e3] py-6 text-lg font-semibold text-white shadow-md transition-all duration-200 hover:bg-[#0077ed] hover:shadow-lg"
@@ -460,7 +507,7 @@ export default function TradeInCalculator() {
           </div>
         )}
 
-        {step === 5 && ["15", "16", "17"].includes(selectedSeries) && (
+        {step === 5 && SERIES_WITH_CYCLES.includes(selectedSeries) && (
           <div className="animate-fade-in">
             <button onClick={() => setStep(4)} className="mb-6 text-[#0071e3] transition-opacity hover:opacity-70">
               ← Volver
@@ -495,6 +542,7 @@ export default function TradeInCalculator() {
                       e.target.select()
                     }
                   }}
+                  aria-label="Número de ciclos de batería"
                   className="w-full rounded-2xl border-2 border-gray-200 bg-gray-50 px-6 py-4 text-center text-2xl font-semibold text-[#1D1D1F] transition-all focus:border-[#0071e3] focus:outline-none focus:ring-4 focus:ring-[#0071e3]/20"
                   placeholder="0"
                 />
@@ -541,7 +589,7 @@ export default function TradeInCalculator() {
         {step === 6 && (
           <div className="animate-fade-in">
             <button
-              onClick={() => setStep(["15", "16", "17"].includes(selectedSeries) ? 5 : 4)}
+              onClick={() => setStep(SERIES_WITH_CYCLES.includes(selectedSeries) ? 5 : 4)}
               className="mb-6 text-[#0071e3] transition-opacity hover:opacity-70"
             >
               ← Volver
@@ -554,8 +602,13 @@ export default function TradeInCalculator() {
               {conditionOptions.map((option) => (
                 <Card
                   key={option.label}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Seleccionar condición ${option.label}: ${option.description}`}
+                  aria-pressed={selectedCondition?.label === option.label}
                   onClick={() => setSelectedCondition(option)}
-                  className={`cursor-pointer rounded-[18px] border-2 bg-white p-8 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-lg ${
+                  onKeyDown={(e) => activateOnKey(e, () => setSelectedCondition(option))}
+                  className={`cursor-pointer rounded-[18px] border-2 bg-white p-8 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0071e3] ${
                     selectedCondition?.label === option.label
                       ? "border-[#0071e3] ring-2 ring-[#0071e3] ring-opacity-50"
                       : "border-gray-200 hover:border-[#0071e3]"
@@ -596,8 +649,13 @@ export default function TradeInCalculator() {
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
               <Card
+                role="button"
+                tabIndex={0}
+                aria-label="Vender mi equipo"
+                aria-pressed={tradeOption === "sell"}
                 onClick={() => setTradeOption("sell")}
-                className={`cursor-pointer rounded-[18px] border-2 bg-white p-8 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-lg ${
+                onKeyDown={(e) => activateOnKey(e, () => setTradeOption("sell"))}
+                className={`cursor-pointer rounded-[18px] border-2 bg-white p-8 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0071e3] ${
                   tradeOption === "sell"
                     ? "border-[#0071e3] ring-2 ring-[#0071e3] ring-opacity-50"
                     : "border-gray-200 hover:border-[#0071e3]"
@@ -617,8 +675,13 @@ export default function TradeInCalculator() {
                 <p className="mt-2 text-center text-sm text-gray-600">Recibe el pago por tu iPhone actual</p>
               </Card>
               <Card
+                role="button"
+                tabIndex={0}
+                aria-label="Cambio por equipo nuevo"
+                aria-pressed={tradeOption === "trade"}
                 onClick={() => setTradeOption("trade")}
-                className={`cursor-pointer rounded-[18px] border-2 bg-white p-8 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-lg ${
+                onKeyDown={(e) => activateOnKey(e, () => setTradeOption("trade"))}
+                className={`cursor-pointer rounded-[18px] border-2 bg-white p-8 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0071e3] ${
                   tradeOption === "trade"
                     ? "border-[#0071e3] ring-2 ring-[#0071e3] ring-opacity-50"
                     : "border-gray-200 hover:border-[#0071e3]"
@@ -674,7 +737,7 @@ export default function TradeInCalculator() {
                     <span className="font-medium text-gray-600">Batería:</span>
                     <span className="font-semibold" style={{ color: getBatteryColor(batteryPercentage) }}>
                       {batteryPercentage}%
-                      {batteryPercentage >= 81
+                      {batteryPercentage >= BATTERY_THRESHOLD
                         ? " (Excelente)"
                         : batteryPercentage >= 60
                           ? " (Regular)"
@@ -685,7 +748,7 @@ export default function TradeInCalculator() {
                     <span className="font-medium text-gray-600">Condición:</span>
                     <span className="font-semibold text-[#1D1D1F]">{selectedCondition?.label}</span>
                   </div>
-                  {["15", "16", "17"].includes(selectedSeries) && (
+                  {SERIES_WITH_CYCLES.includes(selectedSeries) && (
                     <div className="flex justify-between border-b border-gray-100 pb-3">
                       <span className="font-medium text-gray-600">Ciclos de batería:</span>
                       <span className="font-semibold text-[#1D1D1F]">{batteryCycles}</span>
@@ -700,7 +763,7 @@ export default function TradeInCalculator() {
                 </div>
               </Card>
 
-              {selectedCondition?.manual ? (
+              {isManualQuote ? (
                 <div className="mb-8 text-center">
                   <p className="mb-2 text-lg text-gray-600">Precio estimado</p>
                   <p className="text-4xl font-semibold text-[#0071e3]">Cotización sujeta a revisión técnica manual</p>
@@ -711,7 +774,7 @@ export default function TradeInCalculator() {
               ) : (
                 <div className="mb-8 text-center">
                   <p className="mb-2 text-lg text-gray-600">Precio estimado de retoma</p>
-                  <p className="text-6xl font-semibold text-[#0071e3]">${calculatePrice()}</p>
+                  <p className="text-6xl font-semibold text-[#0071e3]">${currentPrice}</p>
                   <p className="mt-3 text-sm text-gray-600">*Precio sujeto a revisión física del equipo</p>
                 </div>
               )}
@@ -752,15 +815,7 @@ export default function TradeInCalculator() {
             Este sitio no es una página oficial de Apple Inc. Los nombres de productos Apple son marcas registradas.
           </p>
           <p className="mt-3 text-xs text-gray-400">
-            Desarrollado por{" "}
-            <a
-              href="https://thislever.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#0071e3] transition-colors hover:text-[#0077ED] hover:underline"
-            >
-              Lever
-            </a>
+            Desarrollado por <span className="font-medium text-[#0071e3]">Mako</span>
           </p>
         </div>
       </footer>
