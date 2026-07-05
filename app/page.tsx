@@ -69,15 +69,15 @@ const pricingDatabase: Record<string, Record<string, { high: number; low: number
     "512GB": { high: 440, low: 400 },
   },
   "iPhone 15 Pro": {
-    "128GB": { high: 530, low: 500 },
-    "256GB": { high: 560, low: 530 },
-    "512GB": { high: 610, low: 560 },
-    "1TB": { high: 630, low: 580 },
-  },
-  "iPhone 15 Pro Max": {
+    "128GB": { high: 410, low: 370 },
     "256GB": { high: 430, low: 390 },
     "512GB": { high: 450, low: 410 },
     "1TB": { high: 470, low: 430 },
+  },
+  "iPhone 15 Pro Max": {
+    "256GB": { high: 560, low: 530 },
+    "512GB": { high: 610, low: 560 },
+    "1TB": { high: 630, low: 580 },
   },
   "iPhone 16": {
     "128GB": { high: 450, low: 410 },
