@@ -4,128 +4,129 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
-const pricingDatabase: Record<string, Record<string, Record<string, { high: number; low: number }>>> = {
+// Tabla de precios de LISTA_TRADE_IN_ACT.
+// `a` = Grado A (como nuevo), `b` = Grado B (detalles de uso): el PDF publica
+// una columna de precio propia para cada grado, no un descuento porcentual.
+// `high` aplica con batería >= BATTERY_HEALTH_THRESHOLD, `low` por debajo.
+// La serie 17 no tiene fila de batería baja en el PDF, así que low = high.
+const pricingDatabase: Record<
+  string,
+  Record<string, { a: { high: number; low: number }; b: { high: number; low: number } }>
+> = {
   "iPhone 12": {
-    "64GB": { high: 150, low: 120 },
-    "128GB": { high: 180, low: 150 },
-    "256GB": { high: 210, low: 180 },
+    "128GB": { a: { high: 170, low: 150 }, b: { high: 136, low: 120 } },
+    "256GB": { a: { high: 190, low: 170 }, b: { high: 152, low: 136 } },
   },
   "iPhone 12 Pro": {
-    "128GB": { high: 240, low: 210 },
-    "256GB": { high: 270, low: 240 },
-    "512GB": { high: 300, low: 270 },
+    "128GB": { a: { high: 200, low: 180 }, b: { high: 160, low: 144 } },
+    "256GB": { a: { high: 220, low: 200 }, b: { high: 176, low: 160 } },
+    "512GB": { a: { high: 220, low: 200 }, b: { high: 176, low: 160 } },
   },
   "iPhone 12 Pro Max": {
-    "128GB": { high: 280, low: 250 },
-    "256GB": { high: 310, low: 280 },
-    "512GB": { high: 340, low: 310 },
+    "128GB": { a: { high: 240, low: 220 }, b: { high: 192, low: 176 } },
+    "256GB": { a: { high: 250, low: 230 }, b: { high: 200, low: 184 } },
+    "512GB": { a: { high: 260, low: 240 }, b: { high: 210, low: 192 } },
   },
   "iPhone 13": {
-    "128GB": { high: 250, low: 220 },
-    "256GB": { high: 280, low: 250 },
-    "512GB": { high: 330, low: 300 },
+    "128GB": { a: { high: 240, low: 220 }, b: { high: 192, low: 176 } },
+    "256GB": { a: { high: 260, low: 240 }, b: { high: 208, low: 192 } },
+    "512GB": { a: { high: 270, low: 250 }, b: { high: 216, low: 200 } },
   },
   "iPhone 13 Pro": {
-    "128GB": { high: 350, low: 320 },
-    "256GB": { high: 380, low: 350 },
-    "512GB": { high: 400, low: 380 },
-    "1TB": { high: 430, low: 410 },
+    "128GB": { a: { high: 330, low: 300 }, b: { high: 264, low: 240 } },
+    "256GB": { a: { high: 340, low: 320 }, b: { high: 272, low: 256 } },
+    "512GB": { a: { high: 360, low: 340 }, b: { high: 288, low: 272 } },
+    "1TB": { a: { high: 360, low: 340 }, b: { high: 288, low: 272 } },
   },
   "iPhone 13 Pro Max": {
-    "128GB": { high: 370, low: 340 },
-    "256GB": { high: 400, low: 370 },
-    "512GB": { high: 450, low: 420 },
-    "1TB": { high: 480, low: 450 },
+    "128GB": { a: { high: 370, low: 340 }, b: { high: 296, low: 272 } },
+    "256GB": { a: { high: 380, low: 350 }, b: { high: 304, low: 280 } },
+    "512GB": { a: { high: 400, low: 360 }, b: { high: 320, low: 288 } },
+    "1TB": { a: { high: 420, low: 360 }, b: { high: 336, low: 288 } },
   },
   "iPhone 14": {
-    "128GB": { high: 350, low: 320 },
-    "256GB": { high: 380, low: 350 },
-    "512GB": { high: 400, low: 380 },
+    "128GB": { a: { high: 280, low: 270 }, b: { high: 224, low: 216 } },
+    "256GB": { a: { high: 290, low: 280 }, b: { high: 232, low: 224 } },
+    "512GB": { a: { high: 300, low: 280 }, b: { high: 240, low: 224 } },
   },
   "iPhone 14 Plus": {
-    "128GB": { high: 370, low: 340 },
-    "256GB": { high: 400, low: 370 },
-    "512GB": { high: 430, low: 340 },
+    "128GB": { a: { high: 320, low: 300 }, b: { high: 256, low: 240 } },
+    "256GB": { a: { high: 330, low: 320 }, b: { high: 264, low: 256 } },
+    "512GB": { a: { high: 340, low: 330 }, b: { high: 272, low: 264 } },
   },
   "iPhone 14 Pro": {
-    "128GB": { high: 450, low: 420 },
-    "256GB": { high: 460, low: 430 },
-    "512GB": { high: 500, low: 470 },
-    "1TB": { high: 520, low: 490 },
+    "128GB": { a: { high: 380, low: 360 }, b: { high: 304, low: 288 } },
+    "256GB": { a: { high: 400, low: 380 }, b: { high: 320, low: 304 } },
+    "512GB": { a: { high: 420, low: 400 }, b: { high: 336, low: 320 } },
+    "1TB": { a: { high: 420, low: 400 }, b: { high: 336, low: 320 } },
   },
   "iPhone 14 Pro Max": {
-    "128GB": { high: 470, low: 440 },
-    "256GB": { high: 500, low: 470 },
-    "512GB": { high: 550, low: 520 },
-    "1TB": { high: 570, low: 540 },
+    "128GB": { a: { high: 440, low: 420 }, b: { high: 352, low: 336 } },
+    "256GB": { a: { high: 480, low: 450 }, b: { high: 384, low: 360 } },
+    "512GB": { a: { high: 500, low: 480 }, b: { high: 400, low: 384 } },
+    "1TB": { a: { high: 520, low: 500 }, b: { high: 416, low: 400 } },
   },
   "iPhone 15": {
-    "128GB": { high: 450, low: 420 },
-    "256GB": { high: 480, low: 450 },
-    "512GB": { high: 510, low: 470 },
+    "128GB": { a: { high: 400, low: 380 }, b: { high: 320, low: 304 } },
+    "256GB": { a: { high: 420, low: 400 }, b: { high: 336, low: 320 } },
+    "512GB": { a: { high: 440, low: 420 }, b: { high: 352, low: 336 } },
   },
   "iPhone 15 Plus": {
-    "128GB": { high: 470, low: 430 },
-    "256GB": { high: 480, low: 440 },
-    "512GB": { high: 500, low: 460 },
+    "128GB": { a: { high: 440, low: 430 }, b: { high: 352, low: 344 } },
+    "256GB": { a: { high: 460, low: 450 }, b: { high: 368, low: 360 } },
+    "512GB": { a: { high: 480, low: 460 }, b: { high: 384, low: 360 } },
   },
   "iPhone 15 Pro": {
-    "128GB": { high: 550, low: 520 },
-    "256GB": { high: 580, low: 550 },
-    "512GB": { high: 630, low: 580 },
-    "1TB": { high: 650, low: 600 },
+    "128GB": { a: { high: 500, low: 450 }, b: { high: 400, low: 360 } },
+    "256GB": { a: { high: 540, low: 450 }, b: { high: 432, low: 360 } },
+    "512GB": { a: { high: 560, low: 460 }, b: { high: 448, low: 368 } },
+    "1TB": { a: { high: 560, low: 460 }, b: { high: 448, low: 368 } },
   },
   "iPhone 15 Pro Max": {
-    "256GB": { high: 620, low: 570 },
-    "512GB": { high: 650, low: 600 },
-    "1TB": { high: 670, low: 620 },
+    "256GB": { a: { high: 600, low: 570 }, b: { high: 480, low: 456 } },
+    "512GB": { a: { high: 620, low: 600 }, b: { high: 496, low: 480 } },
+    "1TB": { a: { high: 620, low: 480 }, b: { high: 512, low: 480 } },
   },
   "iPhone 16": {
-    "128GB": { high: 550, low: 500 },
-    "256GB": { high: 580, low: 530 },
-    "512GB": { high: 630, low: 580 },
+    "128GB": { a: { high: 540, low: 540 }, b: { high: 432, low: 432 } },
+    "256GB": { a: { high: 560, low: 560 }, b: { high: 448, low: 448 } },
+    "512GB": { a: { high: 580, low: 580 }, b: { high: 464, low: 464 } },
   },
   "iPhone 16 Plus": {
-    "128GB": { high: 570, low: 520 },
-    "256GB": { high: 600, low: 550 },
-    "512GB": { high: 630, low: 580 },
+    "128GB": { a: { high: 540, low: 540 }, b: { high: 432, low: 432 } },
+    "256GB": { a: { high: 560, low: 560 }, b: { high: 448, low: 448 } },
+    "512GB": { a: { high: 580, low: 580 }, b: { high: 464, low: 464 } },
   },
   "iPhone 16 Pro": {
-    "128GB": { high: 650, low: 600 },
-    "256GB": { high: 680, low: 630 },
-    "512GB": { high: 700, low: 650 },
-    "1TB": { high: 720, low: 670 },
+    "128GB": { a: { high: 660, low: 640 }, b: { high: 528, low: 512 } },
+    "256GB": { a: { high: 680, low: 670 }, b: { high: 544, low: 530 } },
+    "512GB": { a: { high: 730, low: 720 }, b: { high: 584, low: 576 } },
+    "1TB": { a: { high: 750, low: 700 }, b: { high: 600, low: 560 } },
   },
   "iPhone 16 Pro Max": {
-    "256GB": { high: 780, low: 750 },
-    "512GB": { high: 830, low: 780 },
-    "1TB": { high: 860, low: 810 },
+    "256GB": { a: { high: 800, low: 760 }, b: { high: 640, low: 608 } },
+    "512GB": { a: { high: 830, low: 780 }, b: { high: 664, low: 624 } },
+    "1TB": { a: { high: 850, low: 820 }, b: { high: 680, low: 656 } },
   },
   "iPhone 17": {
-    "128GB": { high: 700, low: 680 },
-    "256GB": { high: 720, low: 700 },
-    "512GB": { high: 750, low: 730 },
-  },
-  "iPhone 17 Air": {
-    "256GB": { high: 780, low: 760 },
-    "512GB": { high: 820, low: 800 },
-    "1TB": { high: 860, low: 840 },
+    "256GB": { a: { high: 600, low: 600 }, b: { high: 480, low: 480 } },
+    "512GB": { a: { high: 680, low: 680 }, b: { high: 544, low: 544 } },
   },
   "iPhone 17 Pro": {
-    "256GB": { high: 900, low: 880 },
-    "512GB": { high: 950, low: 930 },
-    "1TB": { high: 1000, low: 980 },
+    "256GB": { a: { high: 950, low: 950 }, b: { high: 800, low: 800 } },
+    "512GB": { a: { high: 1000, low: 1000 }, b: { high: 800, low: 800 } },
+    "1TB": { a: { high: 1050, low: 1050 }, b: { high: 840, low: 840 } },
   },
   "iPhone 17 Pro Max": {
-    "256GB": { high: 1050, low: 1030 },
-    "512GB": { high: 1100, low: 1080 },
-    "1TB": { high: 1150, low: 1130 },
+    "256GB": { a: { high: 1100, low: 1100 }, b: { high: 880, low: 880 } },
+    "512GB": { a: { high: 1200, low: 1200 }, b: { high: 960, low: 960 } },
+    "1TB": { a: { high: 1300, low: 1300 }, b: { high: 1040, low: 1040 } },
   },
 }
 
 const iPhoneData = {
   "12": [
-    { model: "iPhone 12", capacities: ["64GB", "128GB", "256GB"] },
+    { model: "iPhone 12", capacities: ["128GB", "256GB"] },
     { model: "iPhone 12 Pro", capacities: ["128GB", "256GB", "512GB"] },
     { model: "iPhone 12 Pro Max", capacities: ["128GB", "256GB", "512GB"] },
   ],
@@ -153,16 +154,22 @@ const iPhoneData = {
     { model: "iPhone 16 Pro Max", capacities: ["256GB", "512GB", "1TB"] },
   ],
   "17": [
-    { model: "iPhone 17", capacities: ["128GB", "256GB", "512GB"] },
-    { model: "iPhone 17 Air", capacities: ["256GB", "512GB", "1TB"] },
+    { model: "iPhone 17", capacities: ["256GB", "512GB"] },
     { model: "iPhone 17 Pro", capacities: ["256GB", "512GB", "1TB"] },
     { model: "iPhone 17 Pro Max", capacities: ["256GB", "512GB", "1TB"] },
   ],
 }
 
+// Salud de batería a partir de la cual aplica el precio alto de la tabla.
+// Único punto de verdad: el color, las etiquetas y el cálculo lo comparten.
+const BATTERY_HEALTH_THRESHOLD = 85
+
+// Por debajo de este valor la batería se marca como "requiere servicio".
+const BATTERY_SERVICE_THRESHOLD = 60
+
 const conditionOptions = [
-  { label: "Grado A", description: "Como nuevo", discount: 0 },
-  { label: "Grado B", description: "Detalles de uso", discount: 0.15 },
+  { label: "Grado A", description: "Como nuevo", tier: "a" as const },
+  { label: "Grado B", description: "Detalles de uso", tier: "b" as const },
   { label: "Grado C", description: "Pantalla/Tapa rota o reparaciones previas", manual: true },
 ]
 
@@ -178,9 +185,23 @@ export default function TradeInCalculator() {
   const [tradeOption, setTradeOption] = useState<string>("")
 
   const getBatteryColor = (percentage: number) => {
-    if (percentage >= 81) return "#34c759"
-    if (percentage >= 60) return "#ff9500"
+    if (percentage >= BATTERY_HEALTH_THRESHOLD) return "#34c759"
+    if (percentage >= BATTERY_SERVICE_THRESHOLD) return "#ff9500"
     return "#ff3b30"
+  }
+
+  // El Grado B tiene su propia columna en la lista, así que el descuento real
+  // depende del equipo. Se calcula en vez de mostrar un porcentaje fijo.
+  const gradeBDiscount = () => {
+    const entry = pricingDatabase[selectedModel?.model]?.[selectedCapacity]
+    if (!entry) return null
+
+    const alto = batteryPercentage >= BATTERY_HEALTH_THRESHOLD
+    const a = alto ? entry.a.high : entry.a.low
+    const b = alto ? entry.b.high : entry.b.low
+    if (!a || b >= a) return null
+
+    return Math.round((1 - b / a) * 100)
   }
 
   const calculatePrice = () => {
@@ -188,18 +209,14 @@ export default function TradeInCalculator() {
 
     if (selectedCondition.manual) return 0
 
-    const modelPricing = pricingDatabase[selectedModel.model]
-    if (!modelPricing || !modelPricing[selectedCapacity]) return 0
+    const entry = pricingDatabase[selectedModel.model]?.[selectedCapacity]
+    if (!entry) return 0
 
-    const { high, low } = modelPricing[selectedCapacity]
+    // Cada grado tiene su propia columna de precios en la lista
+    const tier = entry[selectedCondition.tier as "a" | "b"]
+    if (!tier) return 0
 
-    // Select price based on battery percentage
-    let price = batteryPercentage >= 81 ? high : low
-
-    // Apply Grade B discount if applicable (Grado A has 0 discount, Grado C is manual)
-    if (selectedCondition.discount > 0) {
-      price = price * (1 - selectedCondition.discount)
-    }
+    let price = batteryPercentage >= BATTERY_HEALTH_THRESHOLD ? tier.high : tier.low
 
     // Add $20 bonus if user has the original box
     if (hasBox === true) {
@@ -402,9 +419,9 @@ export default function TradeInCalculator() {
                     {batteryPercentage}%
                   </div>
                   <div className="mt-2 text-sm font-medium text-gray-500">
-                    {batteryPercentage >= 81
+                    {batteryPercentage >= BATTERY_HEALTH_THRESHOLD
                       ? "Excelente estado"
-                      : batteryPercentage >= 60
+                      : batteryPercentage >= BATTERY_SERVICE_THRESHOLD
                         ? "Estado regular"
                         : "Requiere servicio"}
                   </div>
@@ -436,12 +453,15 @@ export default function TradeInCalculator() {
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-gray-600">Precio aplicable:</span>
                   <span className="font-semibold text-[#1D1D1F]">
-                    {batteryPercentage >= 81 ? "Batería +80%" : "Batería -80%"}
+                    {batteryPercentage >= BATTERY_HEALTH_THRESHOLD
+                      ? `Batería ≥${BATTERY_HEALTH_THRESHOLD}%`
+                      : `Batería <${BATTERY_HEALTH_THRESHOLD}%`}
                   </span>
                 </div>
-                {batteryPercentage < 60 && (
+                {batteryPercentage < BATTERY_SERVICE_THRESHOLD && (
                   <p className="text-sm text-gray-600">
-                    * Baterías con salud menor al 60% pueden requerir una revisión más detallada
+                    * Baterías con salud menor al {BATTERY_SERVICE_THRESHOLD}% pueden requerir una revisión más
+                    detallada
                   </p>
                 )}
               </div>
@@ -563,8 +583,8 @@ export default function TradeInCalculator() {
                 >
                   <p className="text-center text-xl font-semibold text-[#1D1D1F]">{option.label}</p>
                   <p className="mt-2 text-center text-sm text-gray-600">{option.description}</p>
-                  {option.discount > 0 && (
-                    <p className="mt-2 text-center text-sm font-medium text-red-600">-{option.discount * 100}%</p>
+                  {option.tier === "b" && gradeBDiscount() !== null && (
+                    <p className="mt-2 text-center text-sm font-medium text-red-600">-{gradeBDiscount()}%</p>
                   )}
                   {option.manual && (
                     <p className="mt-2 text-center text-sm font-medium text-[#0071e3]">Cotización manual</p>
@@ -674,9 +694,9 @@ export default function TradeInCalculator() {
                     <span className="font-medium text-gray-600">Batería:</span>
                     <span className="font-semibold" style={{ color: getBatteryColor(batteryPercentage) }}>
                       {batteryPercentage}%
-                      {batteryPercentage >= 81
+                      {batteryPercentage >= BATTERY_HEALTH_THRESHOLD
                         ? " (Excelente)"
-                        : batteryPercentage >= 60
+                        : batteryPercentage >= BATTERY_SERVICE_THRESHOLD
                           ? " (Regular)"
                           : " (Requiere servicio)"}
                     </span>
