@@ -40,9 +40,17 @@ npm run build
 npm start
 ```
 
+## Precios
+
+La tabla de precios de `app/page.tsx` proviene de la lista LISTA_TRADE_IN_ACT.
+Cada modelo y capacidad tiene cuatro valores: precio de Grado A y de Grado B,
+cada uno con su variante para batería por encima o por debajo del umbral
+definido en `BATTERY_HEALTH_THRESHOLD`. Solo se ofrecen en la interfaz las
+capacidades que tienen precio en la lista.
+
 ## Créditos
 
-Desarrollado por [blu0.com](https://blu0.com) para PuntoCell Valencia.
+Desarrollado por [Lever](https://thislever.com) para PuntoCell Valencia.
 
 ## Nota Legal
 

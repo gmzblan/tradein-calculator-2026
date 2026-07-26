@@ -167,22 +167,44 @@ const BATTERY_HEALTH_THRESHOLD = 85
 // Por debajo de este valor la batería se marca como "requiere servicio".
 const BATTERY_SERVICE_THRESHOLD = 60
 
-const conditionOptions = [
-  { label: "Grado A", description: "Como nuevo", tier: "a" as const },
-  { label: "Grado B", description: "Detalles de uso", tier: "b" as const },
+// Series cuyo iPhone informa los ciclos de carga en Ajustes → Batería.
+// Solo ellas ven el paso 5.
+const SERIES_CON_CICLOS = ["15", "16", "17"]
+
+// Un modelo seleccionable con las capacidades que tienen precio en la lista.
+type Phone = { model: string; capacities: string[] }
+
+// Los grados A y B apuntan a su columna de precio; el C se cotiza a mano.
+type ConditionOption = {
+  label: string
+  description: string
+  tier?: "a" | "b"
+  manual?: boolean
+}
+
+const conditionOptions: ConditionOption[] = [
+  { label: "Grado A", description: "Como nuevo", tier: "a" },
+  { label: "Grado B", description: "Detalles de uso", tier: "b" },
   { label: "Grado C", description: "Pantalla/Tapa rota o reparaciones previas", manual: true },
 ]
 
 export default function TradeInCalculator() {
   const [step, setStep] = useState(1)
   const [selectedSeries, setSelectedSeries] = useState<string>("")
-  const [selectedModel, setSelectedModel] = useState<any>(null)
+  const [selectedModel, setSelectedModel] = useState<Phone | null>(null)
   const [selectedCapacity, setSelectedCapacity] = useState<string>("")
   const [hasBox, setHasBox] = useState<boolean | null>(null)
   const [batteryPercentage, setBatteryPercentage] = useState<number>(90)
   const [batteryCycles, setBatteryCycles] = useState<number>(0)
-  const [selectedCondition, setSelectedCondition] = useState<any>(null)
+  const [selectedCondition, setSelectedCondition] = useState<ConditionOption | null>(null)
   const [tradeOption, setTradeOption] = useState<string>("")
+
+  const usaCiclos = SERIES_CON_CICLOS.includes(selectedSeries)
+
+  // El paso 5 (ciclos) no existe en las series que no los informan, así que la
+  // barra muestra 7 puntos en vez de 8. Antes de elegir serie se muestra el
+  // recorrido completo.
+  const pasosActivos = !selectedSeries || usaCiclos ? [1, 2, 3, 4, 5, 6, 7, 8] : [1, 2, 3, 4, 6, 7, 8]
 
   const getBatteryColor = (percentage: number) => {
     if (percentage >= BATTERY_HEALTH_THRESHOLD) return "#34c759"
@@ -193,7 +215,8 @@ export default function TradeInCalculator() {
   // El Grado B tiene su propia columna en la lista, así que el descuento real
   // depende del equipo. Se calcula en vez de mostrar un porcentaje fijo.
   const gradeBDiscount = () => {
-    const entry = pricingDatabase[selectedModel?.model]?.[selectedCapacity]
+    if (!selectedModel) return null
+    const entry = pricingDatabase[selectedModel.model]?.[selectedCapacity]
     if (!entry) return null
 
     const alto = batteryPercentage >= BATTERY_HEALTH_THRESHOLD
@@ -213,8 +236,8 @@ export default function TradeInCalculator() {
     if (!entry) return 0
 
     // Cada grado tiene su propia columna de precios en la lista
-    const tier = entry[selectedCondition.tier as "a" | "b"]
-    if (!tier) return 0
+    if (!selectedCondition.tier) return 0
+    const tier = entry[selectedCondition.tier]
 
     let price = batteryPercentage >= BATTERY_HEALTH_THRESHOLD ? tier.high : tier.low
 
@@ -227,9 +250,13 @@ export default function TradeInCalculator() {
   }
 
   const handleWhatsAppClick = () => {
+    // El resumen no se puede alcanzar sin equipo ni condición, pero sin esta
+    // guarda el mensaje se armaría con valores nulos.
+    if (!selectedModel || !selectedCondition) return
+
     const price = calculatePrice()
 
-    const shouldShowCycles = selectedSeries && ["15", "16", "17"].includes(selectedSeries)
+    const shouldShowCycles = usaCiclos
 
     const tradeOptionText = tradeOption === "sell" ? "Vender mi equipo" : "Cambio por equipo nuevo"
 
@@ -269,7 +296,7 @@ export default function TradeInCalculator() {
       <main className="mx-auto max-w-4xl px-6 py-12">
         {/* Progress Indicator */}
         <div className="mb-12 flex items-center justify-center gap-2">
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+          {pasosActivos.map((num) => (
             <div
               key={num}
               className={`h-2 w-16 rounded-full transition-all duration-300 ${
@@ -469,8 +496,7 @@ export default function TradeInCalculator() {
               {/* Continue Button */}
               <Button
                 onClick={() => {
-                  const needsCyclesStep = ["15", "16", "17"].includes(selectedSeries)
-                  setStep(needsCyclesStep ? 5 : 6)
+                  setStep(usaCiclos ? 5 : 6)
                 }}
                 className="w-full rounded-full bg-[#0071e3] py-6 text-lg font-semibold text-white shadow-md transition-all duration-200 hover:bg-[#0077ed] hover:shadow-lg"
               >
@@ -480,7 +506,7 @@ export default function TradeInCalculator() {
           </div>
         )}
 
-        {step === 5 && ["15", "16", "17"].includes(selectedSeries) && (
+        {step === 5 && usaCiclos && (
           <div className="animate-fade-in">
             <button onClick={() => setStep(4)} className="mb-6 text-[#0071e3] transition-opacity hover:opacity-70">
               ← Volver
@@ -528,7 +554,7 @@ export default function TradeInCalculator() {
                   <div className="flex-1">
                     <p className="text-sm font-medium text-gray-700">¿Cómo encontrar los ciclos de batería?</p>
                     <p className="mt-2 text-sm text-gray-600">
-                      Ve a <strong>Ajustes → Batería → Estado de la batería</strong> y busca "Ciclos de carga"
+                      Ve a <strong>Ajustes → Batería → Estado de la batería</strong> y busca &quot;Ciclos de carga&quot;
                     </p>
                   </div>
                 </div>
@@ -561,7 +587,7 @@ export default function TradeInCalculator() {
         {step === 6 && (
           <div className="animate-fade-in">
             <button
-              onClick={() => setStep(["15", "16", "17"].includes(selectedSeries) ? 5 : 4)}
+              onClick={() => setStep(usaCiclos ? 5 : 4)}
               className="mb-6 text-[#0071e3] transition-opacity hover:opacity-70"
             >
               ← Volver
@@ -676,6 +702,9 @@ export default function TradeInCalculator() {
         {step === 8 && selectedCondition && (
           <div className="animate-fade-in">
             <div className="mx-auto max-w-2xl">
+              <button onClick={() => setStep(7)} className="mb-6 text-[#0071e3] transition-opacity hover:opacity-70">
+                ← Volver
+              </button>
               <h2 className="mb-8 text-center text-3xl font-semibold text-[#1D1D1F]">Resumen de tu iPhone</h2>
 
               <Card className="mb-8 rounded-[18px] border border-gray-200 bg-white p-8 shadow-sm">
@@ -705,7 +734,7 @@ export default function TradeInCalculator() {
                     <span className="font-medium text-gray-600">Condición:</span>
                     <span className="font-semibold text-[#1D1D1F]">{selectedCondition?.label}</span>
                   </div>
-                  {["15", "16", "17"].includes(selectedSeries) && (
+                  {usaCiclos && (
                     <div className="flex justify-between border-b border-gray-100 pb-3">
                       <span className="font-medium text-gray-600">Ciclos de batería:</span>
                       <span className="font-semibold text-[#1D1D1F]">{batteryCycles}</span>
@@ -785,22 +814,6 @@ export default function TradeInCalculator() {
         </div>
       </footer>
 
-      <style jsx global>{`
-        .animate-fade-in {
-          animation: fadeIn 0.4s ease-in;
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   )
 }
