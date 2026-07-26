@@ -160,6 +160,13 @@ const iPhoneData = {
   ],
 }
 
+// Salud de batería a partir de la cual aplica el precio alto de la tabla.
+// Único punto de verdad: el color, las etiquetas y el cálculo lo comparten.
+const BATTERY_HEALTH_THRESHOLD = 85
+
+// Por debajo de este valor la batería se marca como "requiere servicio".
+const BATTERY_SERVICE_THRESHOLD = 60
+
 const conditionOptions = [
   { label: "Grado A", description: "Como nuevo", discount: 0 },
   { label: "Grado B", description: "Detalles de uso", discount: 0.15 },
@@ -178,8 +185,8 @@ export default function TradeInCalculator() {
   const [tradeOption, setTradeOption] = useState<string>("")
 
   const getBatteryColor = (percentage: number) => {
-    if (percentage >= 81) return "#34c759"
-    if (percentage >= 60) return "#ff9500"
+    if (percentage >= BATTERY_HEALTH_THRESHOLD) return "#34c759"
+    if (percentage >= BATTERY_SERVICE_THRESHOLD) return "#ff9500"
     return "#ff3b30"
   }
 
@@ -194,7 +201,7 @@ export default function TradeInCalculator() {
     const { high, low } = modelPricing[selectedCapacity]
 
     // Select price based on battery percentage
-    let price = batteryPercentage >= 81 ? high : low
+    let price = batteryPercentage >= BATTERY_HEALTH_THRESHOLD ? high : low
 
     // Apply Grade B discount if applicable (Grado A has 0 discount, Grado C is manual)
     if (selectedCondition.discount > 0) {
@@ -402,9 +409,9 @@ export default function TradeInCalculator() {
                     {batteryPercentage}%
                   </div>
                   <div className="mt-2 text-sm font-medium text-gray-500">
-                    {batteryPercentage >= 81
+                    {batteryPercentage >= BATTERY_HEALTH_THRESHOLD
                       ? "Excelente estado"
-                      : batteryPercentage >= 60
+                      : batteryPercentage >= BATTERY_SERVICE_THRESHOLD
                         ? "Estado regular"
                         : "Requiere servicio"}
                   </div>
@@ -436,12 +443,15 @@ export default function TradeInCalculator() {
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-gray-600">Precio aplicable:</span>
                   <span className="font-semibold text-[#1D1D1F]">
-                    {batteryPercentage >= 81 ? "Batería +80%" : "Batería -80%"}
+                    {batteryPercentage >= BATTERY_HEALTH_THRESHOLD
+                      ? `Batería ≥${BATTERY_HEALTH_THRESHOLD}%`
+                      : `Batería <${BATTERY_HEALTH_THRESHOLD}%`}
                   </span>
                 </div>
-                {batteryPercentage < 60 && (
+                {batteryPercentage < BATTERY_SERVICE_THRESHOLD && (
                   <p className="text-sm text-gray-600">
-                    * Baterías con salud menor al 60% pueden requerir una revisión más detallada
+                    * Baterías con salud menor al {BATTERY_SERVICE_THRESHOLD}% pueden requerir una revisión más
+                    detallada
                   </p>
                 )}
               </div>
@@ -674,9 +684,9 @@ export default function TradeInCalculator() {
                     <span className="font-medium text-gray-600">Batería:</span>
                     <span className="font-semibold" style={{ color: getBatteryColor(batteryPercentage) }}>
                       {batteryPercentage}%
-                      {batteryPercentage >= 81
+                      {batteryPercentage >= BATTERY_HEALTH_THRESHOLD
                         ? " (Excelente)"
-                        : batteryPercentage >= 60
+                        : batteryPercentage >= BATTERY_SERVICE_THRESHOLD
                           ? " (Regular)"
                           : " (Requiere servicio)"}
                     </span>
